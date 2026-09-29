@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="hi">
-ls<head>
+<head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="theme-color" content="#5E35B1" />
@@ -293,7 +293,7 @@ ls<head>
 
   #pdfRender {
     position: fixed; left: -9999px; top: 0; width: 800px; background: #fff; padding: 40px;
-    font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif;
+    font-family: 'Noto Sans Devanagari', 'Roboto', sans-serif; pointer-events: none;
   }
   #pdfRender h1 { color: #5E35B1; border-bottom: 3px solid #5E35B1; padding-bottom: 10px; }
   #pdfRender h2 { color: #5E35B1; margin-top: 20px; }
@@ -322,7 +322,7 @@ ls<head>
         <div class="logo-circle">🏫</div>
         <div class="login-card">
           <h2 data-i18n="welcome">स्वागत है</h2>
-          <p class="sub" data-i18n="schoolLoginSub">Smart School में अपना स्कूल लॉगिन करें</p>
+          <p class="sub" data-i18n="schoolLoginSub">Smart School में लॉगिन करें</p>
           <div class="field">
             <label data-i18n="schoolId">स्कूल ID / ईमेल</label>
             <input type="text" id="schoolId" placeholder="e.g. dps001" value="dps001"/>
@@ -331,13 +331,13 @@ ls<head>
             <label data-i18n="password">पासवर्ड</label>
             <input type="password" id="schoolPass" placeholder="••••••••" value="school123"/>
           </div>
-          <button class="btn btn-primary" onclick="schoolLogin()" data-i18n="continueSchool">स्कूल के रूप में जारी रखें →</button>
+          <button class="btn btn-primary" onclick="schoolLogin()" data-i18n="continueSchool">जारी रखें →</button>
           <p class="hint" style="text-align:center;margin-top:14px" data-i18n="demoNote">डेमो: कोई भी क्रेडेंशियल काम करेगा</p>
         </div>
       </div>
     </div>
 
-    <!-- SCHOOL REGISTRATION -->
+    <!-- SCHOOL REGISTRATION (One Time Only) -->
     <div class="screen" id="screen-school-register">
       <div class="login-wrap">
         <div class="logo-circle">📝</div>
@@ -385,7 +385,7 @@ ls<head>
       </div>
     </div>
 
-    <!-- TEACHER SETUP -->
+    <!-- TEACHER SETUP (One Time Only) -->
     <div class="screen" id="screen-teacher-setup">
       <div class="login-wrap">
         <div class="logo-circle">👤</div>
@@ -441,7 +441,7 @@ ls<head>
         <div class="photo-circle" onclick="document.getElementById('photoInput').click()">
           <span id="photoPreview">📷</span>
         </div>
-        <span data-i18n="tapPhoto">फ़ोटो अपलोड करने के लिए टैप करें</span>
+        <span data-i18n="tapPhoto">फ़ोटो अपलोड करें</span>
         <input type="file" id="photoInput" accept="image/*" style="display:none" onchange="previewPhoto(event)"/>
       </div>
       <div class="info-card">
@@ -467,7 +467,7 @@ ls<head>
       <p class="hint" style="text-align:center;margin:10px 0" data-i18n="optional">* सभी फ़ील्ड वैकल्पिक हैं लेकिन पसंदीदा हैं</p>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="go('screen-dashboard')" data-i18n="cancel">रद्द करें</button>
-        <button class="btn btn-primary" onclick="reviewStudent()" data-i18n="review">समीक्षा</button>
+        <button class="btn btn-primary" id="btnReview" onclick="reviewStudent()" data-i18n="review">समीक्षा</button>
       </div>
     </div>
 
@@ -484,7 +484,7 @@ ls<head>
       </div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="go('screen-add-student')" data-i18n="edit">संपादित करें</button>
-        <button class="btn btn-primary" onclick="saveStudent()">✓ <span data-i18n="save">सेव करें</span></button>
+        <button class="btn btn-primary" id="btnSaveStudent" onclick="saveStudent()">✓ <span data-i18n="save">सेव करें</span></button>
       </div>
     </div>
 
@@ -542,9 +542,9 @@ ls<head>
           <div class="ico">👤</div>
           <div class="txt"><h4 data-i18n="editProfile">प्रोफ़ाइल संपादित करें</h4><p data-i18n="editProfileSub">अपनी जानकारी बदलें</p></div>
         </div>
-        <div class="settings-item" onclick="go('screen-school-info')">
+        <div class="settings-item" onclick="go('screen-school-edit')">
           <div class="ico">🏫</div>
-          <div class="txt"><h4 data-i18n="schoolInfo">स्कूल जानकारी</h4><p data-i18n="schoolInfoSub">स्कूल का विवरण देखें</p></div>
+          <div class="txt"><h4 data-i18n="editSchool">स्कूल जानकारी संपादित करें</h4><p data-i18n="schoolInfoSub">स्कूल का विवरण बदलें</p></div>
         </div>
       </div>
       <div class="info-card">
@@ -572,11 +572,14 @@ ls<head>
       </div>
     </div>
 
-    <!-- SCHOOL INFO -->
-    <div class="screen" id="screen-school-info">
+    <!-- SCHOOL EDIT -->
+    <div class="screen" id="screen-school-edit">
       <div class="info-card">
-        <h3 data-i18n="schoolInfo">स्कूल जानकारी</h3>
-        <div id="schoolInfoDetails"></div>
+        <h3 data-i18n="editSchool">स्कूल जानकारी संपादित करें</h3>
+        <div class="field"><label data-i18n="schoolName">स्कूल का नाम</label><input type="text" id="eSName"/></div>
+        <div class="field"><label data-i18n="schoolAddr">पता</label><textarea id="eSAddr"></textarea></div>
+        <div class="field"><label data-i18n="schoolPhone">फ़ोन</label><input type="tel" id="eSPhone"/></div>
+        <button class="btn btn-primary" onclick="saveSchoolEdit()" data-i18n="saveChanges">बदलाव सेव करें</button>
       </div>
     </div>
 
@@ -598,7 +601,7 @@ ls<head>
     <div class="modal">
       <h3 data-i18n="addSubject">विषय जोड़ें</h3>
       <div class="field"><label data-i18n="subjectName">विषय का नाम</label><input type="text" id="mSubj"/></div>
-      <div class="field"><label data-i18n="numExams">परीक्षाओं की संख्या (स्तंभ)</label><input type="number" id="mCols" min="1" max="20" value="3"/></div>
+      <div class="field"><label data-i18n="numExams">परीक्षाओं की संख्या</label><input type="number" id="mCols" min="1" max="20" value="3"/></div>
       <div class="field"><label data-i18n="numRows">पंक्तियों की संख्या</label><input type="number" id="mRows" min="1" max="50" value="5"/></div>
       <div class="btn-row">
         <button class="btn btn-secondary" onclick="closeModal()" data-i18n="cancel">रद्द करें</button>
@@ -612,29 +615,8 @@ ls<head>
 </div>
 
 <script type="module">
-  // ================= FIREBASE SETUP =================
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
-  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-  import { getStorage, ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyA5clvzY1NxMaV8z9LQD_ZIw9HfOX1HH-Q",
-    authDomain: "smart-school-e4772.firebaseapp.com",
-    projectId: "smart-school-e4772",
-    storageBucket: "smart-school-e4772.firebasestorage.app",
-    messagingSenderId: "982404745870",
-    appId: "1:982404745870:web:78e0d233a7a1fe9f3957df",
-    measurementId: "G-9VQCYGPF6T"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const db = getFirestore(app);
-  const storage = getStorage(app);
-
-  // ================= STATE =================
-  let students = [];
+  // ================= STATE & INIT =================
+  let students = JSON.parse(localStorage.getItem('students') || '[]');
   let currentDraft = null;
   let currentProfileId = null;
   let schoolInfo = JSON.parse(localStorage.getItem('schoolInfo') || 'null');
@@ -660,14 +642,14 @@ ls<head>
       optional: '* सभी फ़ील्ड वैकल्पिक हैं लेकिन पसंदीदा हैं', cancel: 'रद्द करें', review: 'समीक्षा',
       reviewDetails: 'विवरण की समीक्षा करें', edit: 'संपादित करें', save: 'सेव करें', allStudents: 'सभी छात्र',
       exportPdf: 'PDF निर्यात', back: 'वापस', pdfBtn: '📄 PDF', note: 'नोट', clear: 'साफ़ करें', account: 'खाता',
-      editProfile: 'प्रोफ़ाइल संपादित करें', editProfileSub: 'अपनी जानकारी बदलें', schoolInfo: 'स्कूल जानकारी',
-      schoolInfoSub: 'स्कूल का विवरण देखें', session: 'सत्र', logoutTeacher: 'शिक्षक लॉगआउट',
+      editProfile: 'प्रोफ़ाइल संपादित करें', editProfileSub: 'अपनी जानकारी बदलें', editSchool: 'स्कूल जानकारी संपादित करें',
+      schoolInfoSub: 'स्कूल का विवरण बदलें', session: 'सत्र', logoutTeacher: 'शिक्षक लॉगआउट',
       logoutTeacherSub: 'शिक्षक खाते से लॉगआउट', logoutSchool: 'पूरी तरह लॉगआउट',
       logoutSchoolSub: 'स्कूल और शिक्षक दोनों से लॉगआउट', saveChanges: 'बदलाव सेव करें', home: 'होम', settings: 'सेटिंग',
       addSubject: 'विषय जोड़ें', subjectName: 'विषय का नाम', numExams: 'परीक्षाओं की संख्या', numRows: 'पंक्तियों की संख्या',
       add: 'जोड़ें', hello: 'नमस्ते', personalDetails: 'व्यक्तिगत विवरण', examMarks: 'परीक्षा अंक',
       noSubjects: 'अभी कोई विषय नहीं।', noStudents: 'अभी कोई छात्र नहीं।', addOne: 'जोड़ने के लिए + दबाएँ!',
-      name: 'नाम', address: 'पता', phoneLbl: 'फ़ोन', emailLbl: 'ईमेल', generating: 'PDF बन रहा है...',
+      name: 'नाम', address: 'पता', phoneLbl: 'फ़ोन', emailLbl: 'ईमेल', generating: 'सेव हो रहा है...',
       saved: 'सफलतापूर्वक सेव हुआ!', deleted: 'छात्र हटा दिया गया', confirmDel: 'क्या आप इस छात्र को हटाना चाहते हैं?',
       confirmSubjDel: 'क्या आप इस विषय को हटाना चाहते हैं?', enterName: 'कृपया नाम दर्ज करें',
       enterSchoolName: 'कृपया स्कूल का नाम दर्ज करें', enterSubject: 'विषय का नाम दर्ज करें',
@@ -692,14 +674,14 @@ ls<head>
       optional: '* All fields are optional but preferred', cancel: 'Cancel', review: 'Review',
       reviewDetails: 'Review Details', edit: 'Edit', save: 'Save', allStudents: 'All Students',
       exportPdf: 'Export PDF', back: 'Back', pdfBtn: '📄 PDF', note: 'Note', clear: 'Clear', account: 'Account',
-      editProfile: 'Edit Profile', editProfileSub: 'Change your details', schoolInfo: 'School Info',
-      schoolInfoSub: 'View school details', session: 'Session', logoutTeacher: 'Teacher Logout',
+      editProfile: 'Edit Profile', editProfileSub: 'Change your details', editSchool: 'Edit School Info',
+      schoolInfoSub: 'Change school details', session: 'Session', logoutTeacher: 'Teacher Logout',
       logoutTeacherSub: 'Logout from teacher account', logoutSchool: 'Full Logout',
       logoutSchoolSub: 'Logout from school and teacher', saveChanges: 'Save Changes', home: 'Home', settings: 'Settings',
       addSubject: 'Add Subject', subjectName: 'Subject Name', numExams: 'Number of Exams', numRows: 'Number of Rows',
       add: 'Add', hello: 'Hello', personalDetails: 'Personal Details', examMarks: 'Exam Marks',
       noSubjects: 'No subjects yet.', noStudents: 'No students yet.', addOne: 'Tap + to add one!',
-      name: 'Name', address: 'Address', phoneLbl: 'Phone', emailLbl: 'Email', generating: 'Generating PDF...',
+      name: 'Name', address: 'Address', phoneLbl: 'Phone', emailLbl: 'Email', generating: 'Saving...',
       saved: 'Saved successfully!', deleted: 'Student deleted', confirmDel: 'Delete this student permanently?',
       confirmSubjDel: 'Delete this subject?', enterName: 'Please enter a name',
       enterSchoolName: 'Please enter school name', enterSubject: 'Enter subject name',
@@ -746,10 +728,10 @@ ls<head>
       'screen-review': t('review'), 'screen-students': t('students'),
       'screen-profile': t('studentName'), 'screen-calendar': t('calendar'),
       'screen-settings': t('settings'), 'screen-teacher-edit': t('editProfile'),
-      'screen-school-info': t('schoolInfo')
+      'screen-school-edit': t('editSchool')
     };
     document.getElementById('appbarTitle').textContent = titles[screenId] || 'Smart School';
-    const backScreens = ['screen-school-register','screen-teacher-login','screen-teacher-setup','screen-add-student','screen-review','screen-profile','screen-teacher-edit','screen-school-info'];
+    const backScreens = ['screen-school-register','screen-teacher-login','screen-teacher-setup','screen-add-student','screen-review','screen-profile','screen-teacher-edit','screen-school-edit'];
     document.getElementById('backBtn').style.display = backScreens.includes(screenId) ? 'block' : 'none';
     const showNav = ['screen-dashboard','screen-students','screen-calendar','screen-settings'].includes(screenId);
     document.getElementById('bottomNav').style.display = showNav ? 'flex' : 'none';
@@ -757,7 +739,7 @@ ls<head>
     if (screenId === 'screen-students') renderStudents();
     if (screenId === 'screen-calendar') renderCalendar();
     if (screenId === 'screen-teacher-edit') loadTeacherEdit();
-    if (screenId === 'screen-school-info') renderSchoolInfo();
+    if (screenId === 'screen-school-edit') loadSchoolEdit();
   };
 
   document.getElementById('backBtn').onclick = () => {
@@ -766,7 +748,7 @@ ls<head>
       'screen-school-register': 'screen-school-login', 'screen-teacher-login': 'screen-school-login',
       'screen-teacher-setup': 'screen-dashboard', 'screen-add-student': 'screen-dashboard',
       'screen-review': 'screen-add-student', 'screen-profile': 'screen-students',
-      'screen-teacher-edit': 'screen-settings', 'screen-school-info': 'screen-settings'
+      'screen-teacher-edit': 'screen-settings', 'screen-school-edit': 'screen-settings'
     };
     if (map[cur]) go(map[cur]);
   };
@@ -779,12 +761,19 @@ ls<head>
     if (map[key]) go(map[key]);
   };
 
-  // ================= LOGIN FLOW =================
+  // ================= LOGIN FLOW (ONE TIME ONLY CHECK) =================
   window.schoolLogin = () => {
     const id = document.getElementById('schoolId').value.trim();
     if (!id) return toast(t('enterSchoolName'));
-    if (!schoolInfo) go('screen-school-register');
-    else go('screen-teacher-login');
+    
+    // FIXED: Check if already registered. If yes, skip registration.
+    const existingSchool = localStorage.getItem('schoolInfo');
+    if (existingSchool) {
+      schoolInfo = JSON.parse(existingSchool);
+      go('screen-teacher-login');
+    } else {
+      go('screen-school-register');
+    }
   };
 
   window.saveSchoolReg = () => {
@@ -804,8 +793,15 @@ ls<head>
     const id = document.getElementById('teacherId').value.trim();
     if (!id) return toast('Please enter Teacher ID');
     localStorage.setItem('lastTeacherId', id);
-    if (!teacherInfo) go('screen-teacher-setup');
-    else enterDashboard();
+    
+    // FIXED: Check if teacher already set up. If yes, skip setup.
+    const existingTeacher = localStorage.getItem('teacherInfo');
+    if (existingTeacher) {
+      teacherInfo = JSON.parse(existingTeacher);
+      enterDashboard();
+    } else {
+      go('screen-teacher-setup');
+    }
   };
 
   window.skipTeacherSetup = () => {
@@ -815,6 +811,7 @@ ls<head>
   };
 
   window.saveTeacherSetup = () => {
+    // FIXED: Removed any hanging promises, pure synchronous save
     teacherInfo = {
       name: document.getElementById('tName').value.trim(),
       class: document.getElementById('tClass').value.trim(),
@@ -822,7 +819,8 @@ ls<head>
       qual: document.getElementById('tQual').value.trim()
     };
     localStorage.setItem('teacherInfo', JSON.stringify(teacherInfo));
-    enterDashboard();
+    toast(t('saved'));
+    setTimeout(() => enterDashboard(), 300); // Smooth transition
   };
 
   function enterDashboard() {
@@ -833,16 +831,16 @@ ls<head>
     go('screen-dashboard');
   }
 
-  // ================= FIREBASE INTEGRATION =================
-  window.previewPhoto = async (e) => {
+  // ================= STUDENT CRUD =================
+  window.previewPhoto = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = async (ev) => {
+    reader.onload = (ev) => {
       const img = new Image();
-      img.onload = async () => {
+      img.onload = () => {
         const canvas = document.createElement('canvas');
-        const MAX = 400;
+        const MAX = 400; // Compress for mobile memory
         let w = img.width, h = img.height;
         if (w > h) { if (w > MAX) { h *= MAX/w; w = MAX; } }
         else { if (h > MAX) { w *= MAX/h; h = MAX; } }
@@ -850,7 +848,7 @@ ls<head>
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
         currentDraft = currentDraft || {};
-        currentDraft.photoData = dataUrl; // Store temporarily
+        currentDraft.photoData = dataUrl;
         document.getElementById('photoPreview').innerHTML = `<img src="${dataUrl}"/>`;
       };
       img.src = ev.target.result;
@@ -870,7 +868,6 @@ ls<head>
       m: document.getElementById('sMother').value.trim(),
       x: document.getElementById('sDesc').value.trim(),
       photoData: (currentDraft && currentDraft.photoData) || null,
-      photoUrl: null,
       s: []
     };
     if (!data.n) return toast(t('enterName'));
@@ -887,60 +884,23 @@ ls<head>
     go('screen-review');
   };
 
-  window.saveStudent = async () => {
+  window.saveStudent = () => {
     if (!currentDraft) return;
-    toast(t('generating'));
-    try {
-      let finalPhotoUrl = null;
-      // Upload to Firebase Storage if photo exists (saves local memory!)
-      if (currentDraft.photoData) {
-        const storageRef = ref(storage, `students/${currentDraft.id}.jpg`);
-        await uploadString(storageRef, currentDraft.photoData, 'data_url');
-        finalPhotoUrl = await getDownloadURL(storageRef);
-      }
-      
-      // Save to Firestore
-      const studentData = { ...currentDraft, photoUrl: finalPhotoUrl };
-      delete studentData.photoData; // Remove base64 to save DB space
-      
-      await addDoc(collection(db, "students"), studentData);
-      
-      // Update local cache
-      students.push(studentData);
-      sortStudents();
-      toast(t('saved'));
-      resetAddForm();
-      renderRecent();
-      go('screen-dashboard');
-    } catch (err) {
-      console.error("Firebase Error:", err);
-      // Fallback to local if Firebase rules aren't set yet
-      const studentData = { ...currentDraft, photoUrl: currentDraft.photoData };
-      delete studentData.photoData;
-      students.push(studentData);
-      sortStudents();
-      localStorage.setItem('students', JSON.stringify(students));
-      toast(t('saved') + ' (Local)');
-      resetAddForm();
-      renderRecent();
-      go('screen-dashboard');
-    }
-  };
-
-  async function loadStudentsFromDB() {
-    try {
-      const q = query(collection(db, "students"), orderBy("r", "asc"));
-      const querySnapshot = await getDocs(q);
-      students = [];
-      querySnapshot.forEach((doc) => {
-        students.push({ id: doc.id, ...doc.data() });
-      });
-    } catch (err) {
-      console.log("Using local fallback");
-      students = JSON.parse(localStorage.getItem('students') || '[]');
-    }
+    // FIXED: Changed toast from 'generating' to 'saving' to prevent PDF confusion
+    toast(t('generating')); 
+    
+    const studentData = { ...currentDraft, photoUrl: currentDraft.photoData };
+    delete studentData.photoData; // Clean up
+    
+    students.push(studentData);
     sortStudents();
-  }
+    localStorage.setItem('students', JSON.stringify(students));
+    
+    toast(t('saved'));
+    resetAddForm();
+    renderRecent();
+    go('screen-dashboard');
+  };
 
   function sortStudents() {
     students.sort((a, b) => {
@@ -1041,28 +1001,24 @@ ls<head>
     if (!name) return toast(t('enterSubject'));
     s.s = s.s || [];
     s.s.push({ n: name, c: Array.from({length: cols}, (_, i) => `${t('exam')} ${i+1}`), rw: Array.from({length: rows}, (_, i) => ({ l: `${t('row')} ${i+1}`, v: Array(cols).fill('') })) });
-    persistLocal(); renderMarks(s); toast(t('saved')); closeModal(); document.getElementById('mSubj').value = '';
+    localStorage.setItem('students', JSON.stringify(students));
+    renderMarks(s); toast(t('saved')); closeModal(); document.getElementById('mSubj').value = '';
   };
-  window.addRow = (idx) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw.push({ l: `${t('row')} ${s.s[idx].rw.length+1}`, v: Array(s.s[idx].c.length).fill('') }); persistLocal(); renderMarks(s); };
-  window.addCol = (idx) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].c.push(`${t('exam')} ${s.s[idx].c.length+1}`); s.s[idx].rw.forEach(r => r.v.push('')); persistLocal(); renderMarks(s); };
-  window.delSubject = (idx) => { if (!confirm(t('confirmSubjDel'))) return; const s = students.find(x => x.id === currentProfileId); s.s.splice(idx, 1); persistLocal(); renderMarks(s); };
-  window.updateColName = (idx, ci, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].c[ci] = val; persistLocal(); };
-  window.updateRowLabel = (idx, ri, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw[ri].l = val; persistLocal(); };
-  window.updateMark = (idx, ri, ci, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw[ri].v[ci] = val; persistLocal(); renderMarks(s); };
+  window.addRow = (idx) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw.push({ l: `${t('row')} ${s.s[idx].rw.length+1}`, v: Array(s.s[idx].c.length).fill('') }); localStorage.setItem('students', JSON.stringify(students)); renderMarks(s); };
+  window.addCol = (idx) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].c.push(`${t('exam')} ${s.s[idx].c.length+1}`); s.s[idx].rw.forEach(r => r.v.push('')); localStorage.setItem('students', JSON.stringify(students)); renderMarks(s); };
+  window.delSubject = (idx) => { if (!confirm(t('confirmSubjDel'))) return; const s = students.find(x => x.id === currentProfileId); s.s.splice(idx, 1); localStorage.setItem('students', JSON.stringify(students)); renderMarks(s); };
+  window.updateColName = (idx, ci, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].c[ci] = val; localStorage.setItem('students', JSON.stringify(students)); };
+  window.updateRowLabel = (idx, ri, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw[ri].l = val; localStorage.setItem('students', JSON.stringify(students)); };
+  window.updateMark = (idx, ri, ci, val) => { const s = students.find(x => x.id === currentProfileId); s.s[idx].rw[ri].v[ci] = val; localStorage.setItem('students', JSON.stringify(students)); renderMarks(s); };
 
-  window.deleteStudent = async () => {
+  window.deleteStudent = () => {
     if (!confirm(t('confirmDel'))) return;
-    try {
-      // Note: In a real app, you'd also delete the image from Storage here
-      students = students.filter(x => x.id !== currentProfileId);
-      persistLocal();
-      toast(t('deleted'));
-      renderStudents();
-      go('screen-students');
-    } catch(e) { console.error(e); }
+    students = students.filter(x => x.id !== currentProfileId);
+    localStorage.setItem('students', JSON.stringify(students));
+    toast(t('deleted'));
+    renderStudents();
+    go('screen-students');
   };
-
-  function persistLocal() { localStorage.setItem('students', JSON.stringify(students)); }
 
   // ================= CALENDAR =================
   window.renderCalendar = () => {
@@ -1110,7 +1066,7 @@ ls<head>
     renderCalendar(); toast(t('clear'));
   };
 
-  // ================= SETTINGS =================
+  // ================= SETTINGS & EDIT =================
   window.loadTeacherEdit = () => {
     if (!teacherInfo) teacherInfo = { name:'', class:'', phone:'', qual:'' };
     document.getElementById('eTName').value = teacherInfo.name || '';
@@ -1126,11 +1082,21 @@ ls<head>
     localStorage.setItem('teacherInfo', JSON.stringify(teacherInfo));
     toast(t('saved')); go('screen-settings');
   };
-  window.renderSchoolInfo = () => {
-    if (!schoolInfo) { document.getElementById('schoolInfoDetails').innerHTML = `<p>${t('noData')}</p>`; return; }
-    const rows = [[t('schoolName'), schoolInfo.name], [t('schoolId'), schoolInfo.id], [t('address'), schoolInfo.addr], [t('phoneLbl'), schoolInfo.phone]].filter(r => r[1]);
-    document.getElementById('schoolInfoDetails').innerHTML = rows.map(r => `<div class="info-row"><span class="k">${r[0]}</span><span class="v">${r[1]}</span></div>`).join('');
+
+  window.loadSchoolEdit = () => {
+    if (!schoolInfo) schoolInfo = { name:'', addr:'', phone:'' };
+    document.getElementById('eSName').value = schoolInfo.name || '';
+    document.getElementById('eSAddr').value = schoolInfo.addr || '';
+    document.getElementById('eSPhone').value = schoolInfo.phone || '';
   };
+  window.saveSchoolEdit = () => {
+    schoolInfo.name = document.getElementById('eSName').value.trim();
+    schoolInfo.addr = document.getElementById('eSAddr').value.trim();
+    schoolInfo.phone = document.getElementById('eSPhone').value.trim();
+    localStorage.setItem('schoolInfo', JSON.stringify(schoolInfo));
+    toast(t('saved')); go('screen-settings');
+  };
+
   window.logoutTeacher = () => {
     if (!confirm(t('logoutTeacher') + '?')) return;
     localStorage.removeItem('lastTeacherId'); teacherInfo = null;
@@ -1143,16 +1109,17 @@ ls<head>
     toast(t('loggedOut')); go('screen-school-login');
   };
 
-  // ================= PDF EXPORT =================
+  // ================= PDF EXPORT (MOBILE OPTIMIZED & EXPLICIT ONLY) =================
   window.exportStudentPDF = async () => {
     const s = students.find(x => x.id === currentProfileId);
     if (!s) return;
-    toast(t('generating'));
+    toast("PDF बन रहा है...");
     await renderAndDownloadPDF(buildSingleStudentHTML(s), `${s.n || 'student'}_profile.pdf`);
   };
+  
   window.exportAllPDF = async () => {
     if (!students.length) return toast(t('noData'));
-    toast(t('generating'));
+    toast("PDF बन रहा है...");
     await renderAndDownloadPDF(buildAllStudentsHTML(), `all_students_${Date.now()}.pdf`);
   };
 
@@ -1205,7 +1172,9 @@ ls<head>
     const render = document.getElementById('pdfRender');
     render.innerHTML = html;
     try {
-      const canvas = await html2canvas(render, { scale: 2, backgroundColor: '#ffffff', useCORS: true });
+      // FIXED: Mobile optimized scale (1.5 instead of 2) to prevent memory crashes on phones
+      const isMobile = window.innerWidth < 768;
+      const canvas = await html2canvas(render, { scale: isMobile ? 1.5 : 2, backgroundColor: '#ffffff', useCORS: true });
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -1223,12 +1192,12 @@ ls<head>
         heightLeft -= pageHeight;
       }
       pdf.save(filename);
-      toast(t('saved'));
+      toast("PDF डाउनलोड हो गया!");
     } catch (err) {
       console.error(err);
-      toast('PDF error');
+      toast('PDF बनाने में त्रुटि');
     } finally {
-      render.innerHTML = '';
+      render.innerHTML = ''; // Clean up memory
     }
   }
 
@@ -1239,12 +1208,11 @@ ls<head>
     tEl.textContent = msg;
     tEl.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => tEl.classList.remove('show'), 2200);
+    toastTimer = setTimeout(() => tEl.classList.remove('show'), 2500);
   };
 
   // ================= INIT =================
   setLang(currentLang);
-  loadStudentsFromDB();
 </script>
 </body>
 </html>
